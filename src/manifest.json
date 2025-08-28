@@ -1,0 +1,19 @@
+{
+  "manifest_version": 3,
+  "name": "LinkedIn to Google Sheets Mapper",
+  "version": "1.0",
+  "description": "A simple Chrome extension",
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "emoticon_cool.png",
+      "48": "emoticon_cool.png",
+      "128": "emoticon_cool.png"
+    }
+  },
+  "permissions": [
+    "storage",
+    "activeTab",
+    "scripting"
+  ]
+}
