@@ -8,6 +8,50 @@
 
 // document.getElementsByClassName("job-details-jobs-unified-top-card__company-name")
 
+
+
+
+// This function runs inside the webpage
+function scrapePage() {
+  // Example: grab all links inside <div>
+  const companyName = Array.from(document.getElementsByClassName("job-details-jobs-unified-top-card__company-name")).map(a => (a.innerText.trim()))[0];
+  const positionName = Array.from(document.getElementsByClassName("job-details-jobs-unified-top-card__job-title")).map(a => (a.innerText.trim()))[0];
+
+  let jobDetailsFitLevelPrefs = Array.from(document.getElementsByClassName("job-details-fit-level-preferences")).map(a => (a.innerText.trim()).split("\n"));
+
+  let salaryRange = jobDetailsFitLevelPrefs[0][0];
+  let location = jobDetailsFitLevelPrefs[0][1].slice(1);
+
+
+  let currTabUrl = window.location.href;
+  let jobID = currTabUrl.split("currentJobId=")[1].split("&")[0];
+  let jobLink = `https://www.linkedin.com/jobs/view/${jobID}`;
+
+  let allData = {
+    companyName,
+    positionName,
+    salaryRange,
+    location,
+    jobLink
+  }
+
+  return allData;
+}
+
+
+let sendDataToSheets = (scrapedData) => {
+  let gSheetLink = "https://script.google.com/macros/s/AKfycbzftRqj02W5WZYiMxXEa944NWg82xWND6bTztUCOImp4WrqFbwKDvJKJcGRt_NjCDja6w/exec"
+  fetch(gSheetLink, {
+    method: "POST",
+    body: JSON.stringify(scrapedData),
+    headers: { "Content-Type": "application/json" }
+  })
+    .then(res => res.text())
+    .then(msg => console.log(msg))
+    .catch(err => console.error(err));
+}
+
+
 document.getElementById("submit").addEventListener("click", async () => {
   let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
 
@@ -19,30 +63,13 @@ document.getElementById("submit").addEventListener("click", async () => {
     (results) => {
       const output = results[0].result;
       document.getElementById("output").textContent = JSON.stringify(output, null, 2);
+      try {
+        sendDataToSheets(output);
+        console.log("Sent data to Google Sheets successfully");
+      } catch (error) {
+        console.error("Error sending data to Google Sheets:", error);
+      }
     }
   );
 });
 
-// This function runs inside the webpage
-function scrapePage() {
-  // Example: grab all links inside <div>
-  const companyName = Array.from(document.getElementsByClassName("job-details-jobs-unified-top-card__company-name")).map(a => (a.innerText.trim()))[0];
-  const positionClass = Array.from(document.getElementsByClassName("job-details-jobs-unified-top-card__job-title")).map(a => (a.innerText.trim()))[0];
-
-  let jobDetailsFitLevelPrefs = Array.from(document.getElementsByClassName("job-details-fit-level-preferences")).map(a => (a.innerText.trim()).split("\n"));
-
-  let salaryRangeClass = jobDetailsFitLevelPrefs[0][0];
-  let locationClass = jobDetailsFitLevelPrefs[0][1].slice(1);
-
-
-  let currTabUrl = window.location.href;
-  let jobID = currTabUrl.split("currentJobId=")[1].split("&")[0];
-
-  // get curent tab url
-  // parse  to resemble  https://www.linkedin.com/jobs/view/4294095087
-  let jobLink = `https://www.linkedin.com/jobs/view/${jobID}`;
-
-
-
-  return { companyName, positionClass, locationClass, salaryRangeClass, jobLink };
-}
