@@ -40,17 +40,16 @@ function scrapePage() {
 
 
 let sendDataToSheets = (scrapedData) => {
-  let gSheetLink = "https://script.google.com/macros/s/AKfycbzftRqj02W5WZYiMxXEa944NWg82xWND6bTztUCOImp4WrqFbwKDvJKJcGRt_NjCDja6w/exec"
+  let gSheetLink = "https://script.google.com/macros/s/AKfycbyrx_BxxPhB9GBJgDox98g_ymtwC0PLAXdj8EJsQkwQXTmxPMwo9GmYOpdN_4ISakCg-Q/exec"
   fetch(gSheetLink, {
-    method: "POST",
+    method: "POST", 
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(scrapedData),
-    headers: { "Content-Type": "application/json" }
   })
     .then(res => res.text())
     .then(msg => console.log(msg))
     .catch(err => console.error(err));
 }
-
 
 document.getElementById("submit").addEventListener("click", async () => {
   let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
