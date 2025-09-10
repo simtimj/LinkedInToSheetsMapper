@@ -18,9 +18,11 @@ function scrapePage() {
   const positionName = Array.from(document.getElementsByClassName("job-details-jobs-unified-top-card__job-title")).map(a => (a.innerText.trim()))[0];
 
   let jobDetailsFitLevelPrefs = Array.from(document.getElementsByClassName("job-details-fit-level-preferences")).map(a => (a.innerText.trim()).split("\n"));
+  console.log("jobDetailsFitLevelPrefs:", jobDetailsFitLevelPrefs);
+
 
   let salaryRange = jobDetailsFitLevelPrefs[0][0];
-  let location = jobDetailsFitLevelPrefs[0][1].slice(1);
+  let location = jobDetailsFitLevelPrefs[0][2].slice(1);
 
 
   let currTabUrl = window.location.href;
