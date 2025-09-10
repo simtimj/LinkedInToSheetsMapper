@@ -38,19 +38,6 @@ function scrapePage() {
   return allData;
 }
 
-
-let sendDataToSheets = (scrapedData) => {
-  let gSheetLink = "https://script.google.com/macros/s/AKfycbws1bf8k_tRz8xuW-XDcmNlxVQNpd_t2rdMNuqgxzvHAntT1G-kOwzCQUdzmDPfIr9mIg/exec"
-  fetch(gSheetLink, {
-    method: "POST", 
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(scrapedData),
-  })
-    .then(res => res.text())
-    .then(msg => console.log(msg))
-    .catch(err => console.error(err));
-}
-
 document.getElementById("submit").addEventListener("click", async () => {
   let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
 
@@ -63,8 +50,14 @@ document.getElementById("submit").addEventListener("click", async () => {
       const output = results[0].result;
       document.getElementById("output").textContent = JSON.stringify(output, null, 2);
       try {
-        sendDataToSheets(output);
-        console.log("Sent data to Google Sheets successfully");
+        // sendDataToSheets(output);
+        chrome.runtime.sendMessage(
+          { type: "SEND_PAYLOAD", payload: { output } },
+          response => {
+            console.log("Background replied:", response);
+          }
+        );
+        console.log("Sent data to background.js successfully");
       } catch (error) {
         console.error("Error sending data to Google Sheets:", error);
       }

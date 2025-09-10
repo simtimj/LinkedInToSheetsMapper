@@ -11,10 +11,16 @@
       "128": "emoticon_cool.png"
     }
   },
+  "background": {
+    "service_worker": "background.js"
+  },
   "permissions": [
     "storage",
     "activeTab",
     "scripting",
     "clipboardWrite"
+  ],
+  "host_permissions": [
+    "https://script.google.com/macros/s/*"
   ]
 }
