@@ -40,7 +40,7 @@ function scrapePage() {
 
 
 let sendDataToSheets = (scrapedData) => {
-  let gSheetLink = "https://script.google.com/macros/s/AKfycbyrx_BxxPhB9GBJgDox98g_ymtwC0PLAXdj8EJsQkwQXTmxPMwo9GmYOpdN_4ISakCg-Q/exec"
+  let gSheetLink = "https://script.google.com/macros/s/AKfycbws1bf8k_tRz8xuW-XDcmNlxVQNpd_t2rdMNuqgxzvHAntT1G-kOwzCQUdzmDPfIr9mIg/exec"
   fetch(gSheetLink, {
     method: "POST", 
     headers: { "Content-Type": "application/json" },
